@@ -97,6 +97,7 @@
     "jstimezonedetect": "^1.0.6",
     "ng2-charts": "^1.4.0",
     "normalize.css": "^4.1.1",
+    "primeng": "^1.0.0-beta.20",
     "rxjs": "5.0.0-beta.12",
     "scriptjs": "^2.5.8",
     "socket.io-client": "^1.4.6",
