@@ -29,8 +29,7 @@ export class AppointmentComponent {
   userHasAppointment: boolean = false;
   currentTab: string = 'table';
 
-  // EDT or EST
-  zoneName: string = moment.tz('America/Toronto').zoneName();
+  localTimezone;
 
   profile;
 
@@ -92,6 +91,7 @@ export class AppointmentComponent {
             break;
           }
         }
+
 
         return res;
       })
@@ -193,18 +193,35 @@ export class AppointmentComponent {
   }
 
   /**
-   * Converts UTC hour to local hour.
+   * Converts EST/EDT datetime by hour to UTC
+   */
+  getUtcHour(hour: number) {
+    return moment.tz(this.printHour(hour), 'HH:mm', 'America/Toronto').tz('UTC').format('HH:mm');
+  }
+
+  /**
+   * Converts EST/EDT hour to local hour.
    * @param  {number} hour EST/EDT hour
    * @return {string}      Local hour
    */
   getLocalHour(hour: number): string {
-    let timezone = this.getLocalTimezone();
+    if (!this.localTimezone) {
+      this.localTimezone = this.getLocalTimezone();
+    }
 
-    // create moment in EST/EDT timezone
+    // read time for EST/EDT timezone
     let eastern = moment.tz(this.printHour(hour), 'HH:mm', 'America/Toronto');
+    let local = eastern.clone().tz(this.localTimezone);
 
-    // convert it it to users timezone and return
-    return eastern.tz(timezone).format('HH:mm');
+    // check if appointment falls to the next day
+    if (eastern.day() < local.day()) {
+      return local.format('HH:mm') + ' (next day)';
+    } else if (eastern.day() > local.day()) {
+      return local.format('HH:mm') + ' (prev. day)';
+    }
+
+    // convert EST/EDT time to users timezone and return formatted hour
+    return local.format('HH:mm');
   }
 
   weekDay(weekDay: string): string {
@@ -234,6 +251,8 @@ export class AppointmentComponent {
         res => this.profile,
         err => console.log(err)
       );
+
+    this.localTimezone = this.getLocalTimezone();
   }
 
   ngOnDestroy() {
