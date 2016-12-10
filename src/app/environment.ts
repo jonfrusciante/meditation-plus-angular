@@ -11,6 +11,7 @@ import { MeditationService } from '../app/meditation/meditation.service';
 import { LiveService } from '../app/live/live.service';
 import { AppointmentService } from '../app/appointment/appointment.service';
 import { TestimonialService } from '../app/testimonial';
+import { WikiService } from '../app/wiki';
 import { AuthGuard } from '../app/auth-guard';
 import { LoginGuard } from '../app/login-guard';
 import { AdminGuard } from '../app/admin-guard';
@@ -26,6 +27,7 @@ let PROVIDERS: any[] = [
   CommitmentService,
   AppointmentService,
   TestimonialService,
+  WikiService,
   LiveService,
   AuthGuard,
   LoginGuard,
